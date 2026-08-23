@@ -1,7 +1,7 @@
 {
   "name": "finance-tracker-netlify",
   "version": "1.0.0",
-  "description": "Finance Tracker - static frontend + Netlify Functions backend",
+  "description": "Bertsch's - static frontend + Netlify Functions backend",
   "private": true,
   "scripts": {
     "dev": "netlify dev"

@@ -1,4 +1,4 @@
-# Finance Tracker (Netlify version)
+# Bertsch's (Netlify version)
 
 A static frontend + Netlify Functions backend for turning an annual
 income/expense list into a 12-sheet (January-December) report with running
