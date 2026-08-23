@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input - Finance Tracker</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">💰 Finance Tracker</span>
+      <div class="user-box">
+        <span id="nav-user-email"></span>
+        <a class="btn btn-ghost" href="#" id="nav-logout">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/dashboard.html">&larr; Back to dashboard</a>
+    <h1>Input</h1>
+
+    <div id="flash-container" class="flashes"></div>
+
+    <div class="card">
+      <h2>Generate a new input Excel sheet</h2>
+      <p>Every click generates and downloads a fresh, correctly-formatted template (with a couple of example rows you can delete). Fill it in with your income and expense lines, then head to the <a href="/output.html">Output</a> page when you're done.</p>
+      <button class="btn btn-primary" id="generate-btn" type="button">Generate new Excel sheet</button>
+      <p class="spinner-text" id="status-text"></p>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+  <script>
+    if (!requireAuthOrRedirect()) { /* redirected */ }
+    setupNav();
+
+    const btn = document.getElementById("generate-btn");
+    const flash = document.getElementById("flash-container");
+    const status = document.getElementById("status-text");
+
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      status.textContent = "Generating...";
+      flash.innerHTML = "";
+      try {
+        const res = await apiFetch("/generate-input", { method: "GET" });
+        const data = await res.json();
+        if (!res.ok) {
+          showFlash(flash, data.error || "Could not generate the file.", "error");
+          return;
+        }
+        downloadBase64File(data.filename, data.dataBase64);
+        showFlash(flash, `'${data.filename}' has been generated and downloaded. It's ready to use.`, "success");
+      } catch (err) {
+        showFlash(flash, err.message || "Something went wrong.", "error");
+      } finally {
+        btn.disabled = false;
+        status.textContent = "";
+      }
+    });
+  </script>
+</body>
+</html>

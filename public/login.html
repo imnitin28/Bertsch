@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in - Finance Tracker</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">💰 Finance Tracker</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="flash-container" class="flashes"></div>
+
+    <div class="card auth-card">
+      <h1>Log in</h1>
+      <form id="login-form">
+        <label>
+          Email
+          <input type="email" id="email" required autofocus placeholder="you@example.com">
+        </label>
+        <label>
+          Password
+          <input type="password" id="password" required placeholder="••••••••">
+        </label>
+        <button class="btn btn-primary" type="submit">Log in</button>
+      </form>
+      <p class="hint">Two accounts are pre-configured for this app. Edit <code>USERS</code> in <code>netlify/functions/lib/auth.js</code> to change them.</p>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+  <script>
+    if (getToken()) window.location.href = "/dashboard.html";
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const flash = document.getElementById("flash-container");
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showFlash(flash, data.error || "Login failed.", "error");
+          return;
+        }
+        setSession(data.token, data.email);
+        window.location.href = "/dashboard.html";
+      } catch (err) {
+        showFlash(flash, "Could not reach the server. Please try again.", "error");
+      }
+    });
+  </script>
+</body>
+</html>

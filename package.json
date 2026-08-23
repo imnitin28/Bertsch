@@ -1,0 +1,13 @@
+{
+  "name": "finance-tracker-netlify",
+  "version": "1.0.0",
+  "description": "Finance Tracker - static frontend + Netlify Functions backend",
+  "private": true,
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

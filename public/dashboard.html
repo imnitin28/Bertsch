@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Finance Tracker</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">💰 Finance Tracker</span>
+      <div class="user-box">
+        <span id="nav-user-email"></span>
+        <a class="btn btn-ghost" href="#" id="nav-logout">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Welcome</h1>
+    <p class="subtitle">What would you like to do?</p>
+
+    <div class="choice-grid">
+      <a class="choice-card" href="/input.html">
+        <div class="choice-icon">📝</div>
+        <h2>Input</h2>
+        <p>Download a fresh, correctly-formatted expenses/income Excel template.</p>
+      </a>
+      <a class="choice-card" href="/output.html">
+        <div class="choice-icon">📊</div>
+        <h2>Output</h2>
+        <p>Upload a filled-in sheet and generate the month-by-month report.</p>
+      </a>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+  <script>
+    if (!requireAuthOrRedirect()) { /* redirected */ }
+    setupNav();
+  </script>
+</body>
+</html>

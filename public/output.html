@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Output - Finance Tracker</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">💰 Finance Tracker</span>
+      <div class="user-box">
+        <span id="nav-user-email"></span>
+        <a class="btn btn-ghost" href="#" id="nav-logout">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/dashboard.html">&larr; Back to dashboard</a>
+    <h1>Output</h1>
+
+    <div id="flash-container" class="flashes"></div>
+
+    <div class="card">
+      <h2>Upload your input Excel sheet</h2>
+      <p>Upload a filled-in input sheet. A 12-sheet (January-December) report with totals will be generated and downloaded automatically.</p>
+      <form id="upload-form">
+        <label>
+          Input Excel file (.xlsx)
+          <input type="file" id="input-file" accept=".xlsx" required>
+        </label>
+        <button class="btn btn-primary" id="submit-btn" type="submit">Generate output</button>
+      </form>
+      <p class="spinner-text" id="status-text"></p>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+  <script>
+    if (!requireAuthOrRedirect()) { /* redirected */ }
+    setupNav();
+
+    const form = document.getElementById("upload-form");
+    const btn = document.getElementById("submit-btn");
+    const flash = document.getElementById("flash-container");
+    const status = document.getElementById("status-text");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById("input-file");
+      const file = fileInput.files[0];
+      if (!file) return;
+      if (!file.name.toLowerCase().endsWith(".xlsx")) {
+        showFlash(flash, "Only .xlsx files are supported.", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      status.textContent = "Processing...";
+      flash.innerHTML = "";
+
+      try {
+        const dataBase64 = await fileToBase64(file);
+        const res = await apiFetch("/process-output", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename: file.name, dataBase64 }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showFlash(flash, data.error || "Could not process that file.", "error");
+          return;
+        }
+        downloadBase64File(data.filename, data.dataBase64);
+        showFlash(flash, "Output file generated and downloaded successfully.", "success");
+        form.reset();
+      } catch (err) {
+        showFlash(flash, err.message || "Something went wrong.", "error");
+      } finally {
+        btn.disabled = false;
+        status.textContent = "";
+      }
+    });
+  </script>
+</body>
+</html>
