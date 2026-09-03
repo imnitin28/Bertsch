@@ -80,6 +80,12 @@ function showFlash(container, message, type = "success") {
 function setupNav() {
   const emailEl = document.getElementById("nav-user-email");
   if (emailEl) emailEl.textContent = getEmail() || "";
+
+  const specialMsg = document.getElementById("special-message");
+  if (specialMsg && getEmail() === "junia1.junia2.junia3@bertsch.com") {  
+    specialMsg.textContent = "Junia Bertsch, you look extremely beautiful with middle hair partition";
+  }
+
   const logoutBtn = document.getElementById("nav-logout");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
